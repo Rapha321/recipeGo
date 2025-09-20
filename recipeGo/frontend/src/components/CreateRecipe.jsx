@@ -34,7 +34,7 @@ const CreateRecipe = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState();
-    const [publicValue, setPublicValue] = useState(false);
+    const [showPublicOnly, setShowPublicOnly] = useState(false);
     const [formInputs, setFormInputs] = useState({
         title: "",
         description: "",
@@ -157,11 +157,13 @@ const CreateRecipe = () => {
                   Make this recipe public:
                 </Typography>
                 <Radio
-                  checked={publicValue}
-                  onClick={() => setPublicValue(!publicValue)}
-                  value="a"
-                  name="radio-buttons"
-                  inputProps={{ 'aria-label': 'A' }}
+                  checked={showPublicOnly}
+                  id="public"
+                  onClick={() => setShowPublicOnly(!showPublicOnly)}
+                  name="show-public-radio"
+                  value={formInputs.public}
+                  inputProps={{ 'aria-label': 'Make recipe public' }}
+                  onChange={handleInputChange}
                 />
               </Box>
                 <Button

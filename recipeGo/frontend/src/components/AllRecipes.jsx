@@ -31,13 +31,12 @@ import Chip from '@mui/material/Chip';
 import Tag from './Tag.jsx';
 import RecipeDialog from './RecipeDialog.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
+import { useAuth } from '../AuthContext.jsx';
 
 
 const AllRecipes = () => {
 
     const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState(null);
     const [allRecipes, setAllRecipes] = useState([]);
     const [message, setMessage] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -48,6 +47,7 @@ const AllRecipes = () => {
     const [openRecipeDialog, setOpenRecipeDialog] = useState(false);
     const [selectedRecipeDetails, setSelectedRecipeDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { isLoggedIn, user } = useAuth();
 
     const getAllRecipes = async () => {
         try {
@@ -62,50 +62,37 @@ const AllRecipes = () => {
 
     const getMyFavoriteRecipes = async () => {
         try {
-            const res = await api.get('/api/favorites/all-favorites/')
-            const favoriteIds = res.data.map(fav => fav.recipe);
-            setMyFavoriteRecipes(favoriteIds);
+            const res = await api.get('/api/favorites/')
+            // const favoriteIds = res.data.map(fav => fav.recipe);
+            setMyFavoriteRecipes(res.data);
         } catch (error) {
             console.error("Error fetching favorite recipes:", error);
         }
     };
 
-    const getUsername = async () => {
-      try {
-          const res = await api.get("/api/user/info/");
-          setUsername(res.data.username);
-      } catch (error) {
-          console.error("Error fetching user info:", error);
-          setUsername(null);
-      }
-    };
-
     useEffect(() => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        const loggedInStatus = !!token;
-        setIsLoggedIn(loggedInStatus);
-        
+        const token = localStorage.getItem(ACCESS_TOKEN); 
         getAllRecipes();
 
-        if (loggedInStatus) {
+        if (token) {
             getMyFavoriteRecipes();
-            getUsername();
         }
 
-    }, []);
+    }, [isLoggedIn]);
 
     const handleFavoriteClick = async (id) => {
         try {
-            const isFavorite = myFavoriteRecipes.some(favId => favId === id);
+            const isFavorite = myFavoriteRecipes.some(fav => fav.id === id);
 
             if (isFavorite) {
                 // Send a DELETE request to remove the favorite
                 await api.delete(`/api/favorites/delete/${id}/`);
-                setMyFavoriteRecipes(prevFavs => prevFavs.filter(favId => favId !== id));
+                setMyFavoriteRecipes(prevFavs => prevFavs.filter(fav => fav.id !== id));
             } else {
                 // Send a POST request to add the favorite
                 const res = await api.post(`/api/favorites/add/`, { recipe_id: id });
-                setMyFavoriteRecipes(prevFavs => [...prevFavs, res.data.recipe]);
+                // Add the new favorite to the state
+                setMyFavoriteRecipes(prevFavs => [...prevFavs, res.data]);
             }
         } catch (error) {
             console.error("Error updating favorite status:", error);
@@ -189,9 +176,12 @@ const AllRecipes = () => {
                             Recipes
                         </Typography>
 
-                        {allRecipes.map(recipe => {
-                            const isOwner = recipe.owner === username;
-                            const isFavorite = myFavoriteRecipes.includes(recipe.id);
+                        {allRecipes
+                            .filter(recipe => recipe.public === true)
+                            .map(recipe => {
+                            // Check if the recipe owner's ID matches the current user's ID
+                            const isOwner = isLoggedIn && recipe.owner === user?.id && user?.id != null; 
+                            // const isFavorite = myFavoriteRecipes.some(fav => fav.id === recipe.id);
 
                             return (
                                 <ListItem
@@ -206,13 +196,20 @@ const AllRecipes = () => {
                                                     e.stopPropagation();
                                                     handleFavoriteClick(recipe.id);
                                                 }}
-                                                disabled={!isOwner}
+                                                hide={recipe.created_by !== user?.user_id}
+                                                disabled={recipe.created_by !== user?.user_id}
                                             >
-                                                {isFavorite ? (
-                                                    <FavoriteIcon sx={{ color: 'red' }} />
-                                                ) : (
-                                                    <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                                )}
+                                                {
+                                                    recipe.created_by !== user?.user_id ? (
+                                                        <FavoriteBorderIcon sx={{ color: 'light-grey' }} />
+                                                    ) : (
+                                                        myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
+                                                            <FavoriteIcon sx={{ color: 'red' }} />
+                                                        ) : (
+                                                            <FavoriteBorderIcon sx={{ color: 'red' }} />
+                                                        )
+                                                    )
+                                                }
                                             </IconButton>
                                             <IconButton
                                                 edge="end"
@@ -221,7 +218,7 @@ const AllRecipes = () => {
                                                     e.stopPropagation();
                                                     handleTagClick(recipe.id);
                                                 }}
-                                                disabled={!isOwner}
+                                                disabled={recipe.created_by !== user?.user_id}
                                                 sx={{ color: 'blue' }}
                                             >
                                                 <LocalOfferIcon />
@@ -233,7 +230,7 @@ const AllRecipes = () => {
                                                     e.stopPropagation();
                                                     handleDeleteClick(recipe.id);
                                                 }}
-                                                disabled={!isOwner}
+                                                disabled={recipe.created_by !== user?.user_id}
                                                 sx={{ color: 'gray' }}
                                             >
                                                 <Delete />

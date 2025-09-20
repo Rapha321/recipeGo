@@ -9,8 +9,13 @@ import {
     Chip,
     Stack
 } from '@mui/material';
+import { useAuth } from '../AuthContext.jsx';
 
 const RecipeDialog = ({ open, onClose, recipeDetails }) => {
+
+    const { isLoggedIn, user } = useAuth();
+    const isOwner = isLoggedIn && recipeDetails?.created_by === user?.user_id && user?.user_id != null; 
+
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             {recipeDetails && (
@@ -27,7 +32,7 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                         <Typography variant="body1" sx={{ mb: 2 }}>
                             {recipeDetails.description}
                         </Typography>
-                        {recipeDetails.tags?.length > 0 && (
+                        {isOwner && (
                             <>
                                 <Typography variant="subtitle1">Tags:</Typography>
                                 <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 1 }}>

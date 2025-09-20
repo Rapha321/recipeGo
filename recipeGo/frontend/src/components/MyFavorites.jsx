@@ -29,12 +29,13 @@ import Tag from './Tag.jsx';
 import RecipeDialog from './RecipeDialog.jsx'
 import LoginRegister from './LoginRegister.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
+import { useAuth } from '../AuthContext.jsx';
 
 
 const MyFavorites = () => {
 
     const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [recipes, setRecipes] = useState([]);
     const [message, setMessage] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -45,6 +46,7 @@ const MyFavorites = () => {
     const [openRecipeDialog, setOpenRecipeDialog] = useState(false);
     const [selectedRecipeDetails, setSelectedRecipeDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { isLoggedIn, user } = useAuth();
 
 
     const getFavoriteRecipes = async () => {
@@ -58,18 +60,6 @@ const MyFavorites = () => {
         }
     };
 
-    // Fetch recipes on component mount
-    useEffect(() => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (token) 
-        {
-            getRecipes();
-            getFavoriteRecipes();
-        }
-        setIsLoggedIn(!!token); 
-    }, []);
-
-
     const getRecipes = async () => {
         try {
             const res = await api.get("/api/recipes/");
@@ -80,6 +70,17 @@ const MyFavorites = () => {
             setLoading(false); 
         }
     };
+
+    // Fetch recipes on component mount
+    useEffect(() => {
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        if (token) 
+        {
+            getRecipes();
+            getFavoriteRecipes();
+        }
+    }, []);
+
 
     const handleFavoriteClick = async (id) => {
         try {
@@ -150,7 +151,7 @@ const MyFavorites = () => {
         setOpenRecipeDialog(true);
     };
 
-      return (
+    return (
         <>
             {/* Success/Error Message */}
             <Snackbar
@@ -291,7 +292,7 @@ const MyFavorites = () => {
                 recipeId={selectedRecipe}
             />
         </>
-      )
+    )
 
 }
 

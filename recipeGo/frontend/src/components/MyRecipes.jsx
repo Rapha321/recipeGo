@@ -31,11 +31,11 @@ import Tag from './Tag.jsx';
 import RecipeDialog from './RecipeDialog.jsx'
 import LoginRegister from './LoginRegister.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
+import { useAuth } from '../AuthContext.jsx';
 
 const MyRecipes = () => {
 
     const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [recipes, setRecipes] = useState([]);
     const [message, setMessage] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -46,7 +46,9 @@ const MyRecipes = () => {
     const [openRecipeDialog, setOpenRecipeDialog] = useState(false);
     const [selectedRecipeDetails, setSelectedRecipeDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { isLoggedIn, user } = useAuth();
 
+    console.log("isLoggedIn from MYRecipe: ", isLoggedIn)
 
     const getFavoriteRecipes = async () => {
         try {
@@ -54,6 +56,9 @@ const MyRecipes = () => {
             setMyFavoriteRecipes(res.data);
         } catch (err) {
             console.error("Error fetching favorites:", err);
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -75,8 +80,7 @@ const MyRecipes = () => {
         {
             getRecipes();
             getFavoriteRecipes();
-        }
-        setIsLoggedIn(!!token); 
+        } 
     }, []);
 
     const handleFavoriteClick = async (id) => {
@@ -90,7 +94,6 @@ const MyRecipes = () => {
             } else {
                 // Send a POST request to add the favorite
                 const res = await api.post(`/api/favorites/add/`, { recipe_id: id });
-                console.log("res:", res)
                 // Add the new favorite to the state
                 setMyFavoriteRecipes(prevFavs => [...prevFavs, res.data]);
             }
@@ -167,8 +170,8 @@ const MyRecipes = () => {
             />
 
             {/* Display icons and logics */}
-            { isLoggedIn ? (
-                loading ? (
+            { isLoggedIn ? 
+                ( loading ? (
                     <Typography align="center" sx={{ mt: 4 }}>
                         Loading recipes...
                     </Typography>
@@ -193,12 +196,12 @@ const MyRecipes = () => {
                                             handleFavoriteClick(recipe.id);
                                         }}
                                     >
-                                        {
-                                            myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
-                                                <FavoriteIcon sx={{ color: 'red' }} />
-                                            ) : (
-                                                <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                        )}
+                                    {
+                                        myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
+                                            <FavoriteIcon sx={{ color: 'red' }} />
+                                        ) : (
+                                            <FavoriteBorderIcon sx={{ color: 'red' }} />
+                                    )}
                                     </IconButton>
                                     <IconButton 
                                         edge="end" 

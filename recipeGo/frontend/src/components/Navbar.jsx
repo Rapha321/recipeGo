@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState, useEffect} from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,32 +14,21 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import DiningIcon from '@mui/icons-material/Dining';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { ACCESS_TOKEN } from "../constants";
+import { useAuth } from '../AuthContext.jsx';
 
 const pages = ['All recipes', 'Create recipe', 'My recipes', 'My favorite'];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const { isLoggedIn, handleLogout, settings } = useAuth();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    setIsLoggedIn(!!token);
+  // This line is already sufficient. It re-evaluates on every render.
+  // let settings = isLoggedIn ? ['Profile', 'Logout'] : ['Login'];
 
-    const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem(ACCESS_TOKEN));
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const settings = ['Profile', isLoggedIn ? 'Logout' : 'Login'];
+  console.log("isLoggedIn from NavBar: ", isLoggedIn)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -76,35 +66,11 @@ function Navbar() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (token) {
-        await fetch('/api/logout/', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      }
-      localStorage.clear();
-      setIsLoggedIn(false); // Update state on successful logout
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      localStorage.clear();
-      setIsLoggedIn(false); // Even on error, assume logged out
-      navigate('/login');
-    }
-  };
+
 
   const handleSettingClick = (setting) => {
     handleCloseUserMenu();
     switch (setting) {
-      case 'Profile':
-        navigate('/profile');
-        break;
       case 'Logout':
         handleLogout();
         break;
@@ -230,11 +196,9 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={settings} onClick={() => handleSettingClick(settings)}>
+                  <Typography textAlign="center">{settings}</Typography>
                 </MenuItem>
-              ))}
             </Menu>
           </Box>
         </Toolbar>

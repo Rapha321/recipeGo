@@ -23,9 +23,9 @@ const LoginRegister = ({ msg }) => {
                     <Link 
                         onClick={() => navigate('/register')} 
                         style={{ 
-                            color: "#1976d2", 
-                            textDecoration: "none",
-                            cursor: 'pointer'
+                                color: "#1976d2", 
+                                textDecoration: "none",
+                                cursor: 'pointer'
                             }}
                         >
                         Create an account

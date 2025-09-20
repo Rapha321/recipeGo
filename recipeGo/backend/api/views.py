@@ -174,4 +174,4 @@ class UserInfoView(APIView):
 
     def get(self, request):
         user = request.user
-        return Response({"username": user.username})
+        return Response({"user_id": user.id})

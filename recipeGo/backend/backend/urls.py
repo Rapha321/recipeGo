@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.static import serve
 from django.contrib.auth.views import LogoutView
+from rest_framework_simplejwt.views import TokenBlacklistView
 
 urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
@@ -17,6 +18,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
     path("api/logout/", LogoutView.as_view(), name="logout"),
+    path("api/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
     path("api/", include("api.urls")),
 ]
 

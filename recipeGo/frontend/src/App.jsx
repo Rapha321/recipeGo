@@ -12,6 +12,7 @@ import MyRecipes from './components/MyRecipes'
 import MyFavorites from './components/MyFavorites'
 import AllRecipes from './components/AllRecipes'
 // import Profile from './components/Profile'
+import { AuthProvider } from './AuthContext';
 
 // Logout component to clear local storage and redirect to login
 function Logout() {
@@ -41,19 +42,21 @@ function RegisterAndLogout() {
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
-        <Route path="/recipes/all-recipes" element={<AllRecipes />} />
-        <Route path="/recipes/create" element={<CreateRecipe />} />
-        <Route path="/my-recipes" element={<MyRecipes />} />
-        <Route path="/favorites" element={<Favorites />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />}></Route>
-      </Routes>
+      <AuthProvider>
+        <Navbar />
+          <Routes>
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/register" element={<RegisterAndLogout />} />
+            <Route path="/recipes/all-recipes" element={<AllRecipes />} />
+            <Route path="/recipes/create" element={<CreateRecipe />} />
+            <Route path="/my-recipes" element={<MyRecipes />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<NotFound />}></Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
