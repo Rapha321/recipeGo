@@ -62,19 +62,17 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            logout(); // This is the correct place to call the logout function.
+            logout(); 
             navigate('/login');
         }
     };
 
-    let settings = isLoggedIn ? 'Logout' : 'Login';
+    let settings = isLoggedIn ? ['Profile', 'Logout'] : ['Login'];
 
     // Conditional rendering for the loading state
     if (loading) {
-        return <div>Loading...</div>; // You can use a spinner or a custom loading component here
+        return <div>Loading...</div>; 
     }
-
-    console.log("isLoggedIn from AuthContext: ", isLoggedIn)
 
     return (
         <AuthContext.Provider value={{ isLoggedIn, user, login, handleLogout, settings }}>

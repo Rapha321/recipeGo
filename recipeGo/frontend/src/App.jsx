@@ -11,7 +11,7 @@ import CreateRecipe from './components/CreateRecipe'
 import MyRecipes from './components/MyRecipes'
 import MyFavorites from './components/MyFavorites'
 import AllRecipes from './components/AllRecipes'
-// import Profile from './components/Profile'
+import Profile from './components/Profile'
 import { AuthProvider } from './AuthContext';
 
 // Logout component to clear local storage and redirect to login
@@ -22,10 +22,6 @@ function Logout() {
 
 const Favorites = ()  => {
   return <MyFavorites />
-}
-
-const Profile = () => {
-  return <h2>Profile Page - Under Construction</h2>
 }
 
 const Recipes = () => {
@@ -51,6 +47,7 @@ function App() {
             <Route path="/register" element={<RegisterAndLogout />} />
             <Route path="/recipes/all-recipes" element={<AllRecipes />} />
             <Route path="/recipes/create" element={<CreateRecipe />} />
+            <Route path="/recipes/update/:id" element={<CreateRecipe />} />
             <Route path="/my-recipes" element={<MyRecipes />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/profile" element={<Profile />} />

@@ -7,14 +7,24 @@ import {
     Typography,
     Box,
     Chip,
-    Stack
+    Stack,
+    IconButton
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
+import Comment from './Comment.jsx';
 
 const RecipeDialog = ({ open, onClose, recipeDetails }) => {
-
+    const navigate = useNavigate();
     const { isLoggedIn, user } = useAuth();
-    const isOwner = isLoggedIn && recipeDetails?.created_by === user?.user_id && user?.user_id != null; 
+    const isOwner = isLoggedIn && recipeDetails?.created_by === user?.user_id && user?.user_id != null;
+
+    const handleEditClick = () => {
+        // Close the dialog before navigating
+        onClose(); 
+        navigate(`/recipes/update/${recipeDetails.id}`);
+    };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -22,6 +32,7 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                 <>
                     <DialogTitle>{recipeDetails.title}</DialogTitle>
                     <DialogContent dividers>
+                        {/* ... (Existing content) ... */}
                         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
                             <img
                                 src={recipeDetails.image ? recipeDetails.image : "https://placehold.co/600x400"}
@@ -42,9 +53,20 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                                 </Stack>
                             </>
                         )}
+                        <Comment recipeId={recipeDetails.id} /> 
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={onClose}>Close</Button>
+                        {isOwner && (
+                            <Button
+                                startIcon={<EditIcon />}
+                                variant="contained"
+                                color="primary"
+                                onClick={handleEditClick}
+                            >
+                                Edit
+                            </Button>
+                        )}
+                        <Button onClick={onClose} variant="contained" color="warning">Close</Button>
                     </DialogActions>
                 </>
             )}

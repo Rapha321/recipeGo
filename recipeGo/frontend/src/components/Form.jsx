@@ -9,6 +9,7 @@ import {
         Paper, 
         TextField, 
         Button, 
+        Link,
         Typography, 
         Stack } from "@mui/material";
 import { useAuth } from "../AuthContext";
@@ -33,7 +34,7 @@ function Form({ route, method }) {
                 login(res.data.access, res.data.refresh);
                 navigate("/")
             } else {
-                navigate("/login")
+                navigate("/profile")
             }
         } catch (error) {
             alert(error)
@@ -83,6 +84,41 @@ function Form({ route, method }) {
                         </Button>
                     </Stack>
                 </Box>
+
+                {
+                    method === 'login' ? (
+                        <Typography variant="body2" sx={{ mt: 2 }}>
+                            New here?{" "}
+                            <Link 
+                                onClick={() => navigate('/register')} 
+                                style={{ 
+                                        color: "#1976d2", 
+                                        textDecoration: "none",
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                Create an account
+                            </Link>
+                        </Typography>
+                    ) :
+                    (
+                        <Typography variant="body2" sx={{ mt: 2 }}>
+                            Already have an account?{" "}
+                            <Link 
+                                onClick={() => navigate('/login')} 
+                                style={{ 
+                                        color: "#1976d2", 
+                                        textDecoration: "none",
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                Login
+                            </Link>
+                        </Typography>
+                    )
+                }
+
+
             </Paper>
         </Box>
     );

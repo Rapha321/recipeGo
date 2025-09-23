@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Recipe, Profile, Tag
+from .models import Recipe, Profile, Tag, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "password"]
+        fields = ["id", "first_name", "last_name", "username", "password"]
         extra_kwargs = {
             "password": {"write_only": True} # it tells Django that we want to accept the password when we are creating a new user but we dont want to give the password when we are sending information about a User
         }
@@ -16,6 +16,35 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+class UserAndProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
+
+    class Meta:
+        model = Profile
+        fields = ['first_name', 'last_name', 'bio', 'image']
+
+    def update(self, instance, validated_data):
+        # Extract user data directly from validated_data using the source field
+        user_data = validated_data.pop('user', {})
+
+        # Update fields on the Profile instance
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+
+        # Update fields on the related User instance
+        user = instance.user
+        user.first_name = user_data.get('first_name', user.first_name)
+        user.last_name = user_data.get('last_name', user.last_name)
+
+        # if first_name is not None:
+        #     user.first_name = first_name
+        # if last_name is not None:
+        #     user.last_name = last_name
+        user.save()
+
+        return instance
 
 class FavoriteSerializer(serializers.Serializer):
     recipe_id = serializers.IntegerField(write_only=True)
@@ -48,20 +77,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'created_at', 'created_by']
         read_only_fields = ['id', 'created_at', 'created_by']
 
-    # def create(self, validated_data):
-    #     user = self.context['request'].user
-    #     name = validated_data.get('name')
-
-    #     tag, created = Tag.objects.get_or_create (
-    #         name=name,
-    #         created_by=user
-    #     )
-
-    #     if not created: 
-    #         raise serializers.ValidationError("Tag with this name already exists.")
-
-    #     return tag
-
 
 class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)  # Show tag details
@@ -77,4 +92,17 @@ class ProfileSerializer(serializers.ModelSerializer):
     favorites = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Profile
-        fields = ["favorites"]
+        fields = ['bio', 'image', 'favorites']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+class CommentSerializer(serializers.ModelSerializer):
+    created_by = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Comment
+        fields = ['id', 'recipe', 'created_by', 'content', 'created_at', 'updated_at']
+        read_only_fields = ['recipe', 'created_by', 'created_at', 'updated_at']

@@ -32,6 +32,7 @@ import RecipeDialog from './RecipeDialog.jsx'
 import LoginRegister from './LoginRegister.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
 import { useAuth } from '../AuthContext.jsx';
+import EditIcon from '@mui/icons-material/Edit';
 
 const MyRecipes = () => {
 
@@ -48,12 +49,10 @@ const MyRecipes = () => {
     const [loading, setLoading] = useState(true);
     const { isLoggedIn, user } = useAuth();
 
-    console.log("isLoggedIn from MYRecipe: ", isLoggedIn)
-
     const getFavoriteRecipes = async () => {
         try {
             const res = await api.get("/api/favorites/");
-            setMyFavoriteRecipes(res.data);
+            setMyFavoriteRecipes(res?.data);
         } catch (err) {
             console.error("Error fetching favorites:", err);
         }
@@ -65,7 +64,7 @@ const MyRecipes = () => {
     const getRecipes = async () => {
         try {
             const res = await api.get("/api/recipes/");
-            setRecipes(res.data);
+            setRecipes(res?.data);
         } catch (error) {
             console.error("Error fetching recipes:", error);
         } finally {
@@ -213,6 +212,17 @@ const MyRecipes = () => {
                                         sx={{ color: 'blue' }}
                                     >
                                         <LocalOfferIcon />
+                                    </IconButton>
+                                    <IconButton 
+                                        edge="end" 
+                                        aria-label="edit" 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleEditClick(recipe.id);
+                                        }}
+                                        sx={{ color: 'green' }}
+                                    >
+                                        <EditIcon />
                                     </IconButton>
                                     <IconButton 
                                         edge="end" 

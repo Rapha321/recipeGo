@@ -1,22 +1,23 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, status
-from .serializers import UserSerializer, RecipeSerializer, FavoriteSerializer, TagSerializer
+from .serializers import UserSerializer, RecipeSerializer, FavoriteSerializer, TagSerializer, UserAndProfileSerializer, ProfileSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Recipe, Tag, Profile
+from .models import Recipe, Tag, Profile, Comment
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
 
+# Recipe
 class RecipeListView(generics.ListCreateAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticated]
 
     # Get the recipes created by the authenticated user
     def get_queryset(self):
-        user = self.request.user
-        return Recipe.objects.filter(created_by=user)
+        return Recipe.objects.filter(created_by=self.request.user)
 
     # Override the perform_create method to set the user as the creator of the recipe
     def perform_create(self, serializer):
@@ -24,7 +25,6 @@ class RecipeListView(generics.ListCreateAPIView):
             serializer.save(created_by=self.request.user)
         else:
             print(serializer.errors)
-
 
 class AllRecipesListView(generics.ListAPIView):
     serializer_class = RecipeSerializer
@@ -34,7 +34,6 @@ class AllRecipesListView(generics.ListAPIView):
     def get_queryset(self):
         return Recipe.objects.all().order_by('-created_at')
 
-
 class RecipeCreate(generics.CreateAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticated]
@@ -42,22 +41,79 @@ class RecipeCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
-
 class RecipeDelete(generics.DestroyAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        return Recipe.objects.filter(created_by=user)
+        return Recipe.objects.filter(created_by=self.request.user)
+
+class RecipeUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return Recipe.objects.get(pk=pk, created_by=self.request.user)
+
+class RecipeDetailView(generics.RetrieveAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return Recipe.objects.all()
+
+class RecipeTagAttachView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk, created_by=self.request.user)
+        except Recipe.DoesNotExist:
+            raise NotFound("Recipe not found")
+
+        tag_id = request.data.get("tag_id")
+        if not tag_id:
+            raise ValidationError({"detail": "tag_id is required"})
+
+        try:
+            tag = Tag.objects.get(pk=tag_id, created_by=self.request.user)
+        except Tag.DoesNotExist:
+            raise NotFound("Tag not found")
+
+        recipe.tags.add(tag)
+        return Response({"detail": f"Tag '{tag.name}' attached to recipe"}, status=200)
+
+class RecipeTagDetachView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk, created_by=self.request.user)
+        except Recipe.DoesNotExist:
+            raise NotFound("Recipe not found")
+
+        tag_id = request.data.get("tag_id")
+        if not tag_id:
+            raise ValidationError({"detail": "tag_id is required"})
+
+        try:
+            tag = Tag.objects.get(pk=tag_id, created_by=self.request.user)
+        except Tag.DoesNotExist:
+            raise NotFound("Tag not found")
+
+        recipe.tags.remove(tag)
+        return Response({"detail": f"Tag '{tag.name}' removed from recipe"}, status=200)
 
 
+# User
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny] 
 
 
+# Favorite
 class FavoriteListView(generics.ListAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticated]
@@ -96,10 +152,10 @@ class FavoriteDestroyView(generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# Tag
 class TagListCreateView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
-
 
     def get_queryset(self):
         # return only tags creted by this user
@@ -107,7 +163,6 @@ class TagListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
-
 
 class TagDeleteView(generics.DestroyAPIView):
     serializer_class = TagSerializer
@@ -117,61 +172,80 @@ class TagDeleteView(generics.DestroyAPIView):
         return Tag.objects.filter(created_by=self.request.user)
 
 
-class RecipeDetailView(generics.RetrieveAPIView):
-    serializer_class = RecipeSerializer
-    permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        return Recipe.objects.all()
-
-
-class RecipeTagAttachView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        try:
-            recipe = Recipe.objects.get(pk=pk, created_by=request.user)
-        except Recipe.DoesNotExist:
-            raise NotFound("Recipe not found")
-
-        tag_id = request.data.get("tag_id")
-        if not tag_id:
-            raise ValidationError({"detail": "tag_id is required"})
-
-        try:
-            tag = Tag.objects.get(pk=tag_id, created_by=request.user)
-        except Tag.DoesNotExist:
-            raise NotFound("Tag not found")
-
-        recipe.tags.add(tag)
-        return Response({"detail": f"Tag '{tag.name}' attached to recipe"}, status=200)
-
-
-class RecipeTagDetachView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        try:
-            recipe = Recipe.objects.get(pk=pk, created_by=request.user)
-        except Recipe.DoesNotExist:
-            raise NotFound("Recipe not found")
-
-        tag_id = request.data.get("tag_id")
-        if not tag_id:
-            raise ValidationError({"detail": "tag_id is required"})
-
-        try:
-            tag = Tag.objects.get(pk=tag_id, created_by=request.user)
-        except Tag.DoesNotExist:
-            raise NotFound("Tag not found")
-
-        recipe.tags.remove(tag)
-        return Response({"detail": f"Tag '{tag.name}' removed from recipe"}, status=200)
-
-
+# User
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        return Response({"user_id": user.id})
+
+        profile_data = None
+        if hasattr(user, 'profile'):
+            profile = user.profile
+            profile_data = {
+                'bio': profile.bio,
+                'image': request.build_absolute_uri(profile.image.url) if profile.image else None,
+            }
+
+        return Response({
+                "user_id": user.id, 
+                "first_name": user.first_name, 
+                "last_name": user.last_name,
+                "profile": profile_data
+            })
+
+class UserProfileView(RetrieveAPIView):
+    serializer_class = UserAndProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
+
+class ProfileUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserAndProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
+
+
+# Comment
+class CommentCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        recipe_id = self.kwargs['pk']
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+        except Recipe.DoesNotExist:
+            raise NotFound("Recipe not found.")
+        
+        # Save the comment with the correct author and recipe
+        serializer.save(created_by=self.request.user, recipe=recipe)
+
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    # Get the comments created by the authenticated user
+    def get_queryset(self):
+        recipe_id = self.kwargs['pk']
+        # Return only the comments for the specified recipe
+        return Comment.objects.filter(recipe__id=recipe_id).order_by('-created_at')
+
+class CommentDeleteView(generics.DestroyAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Only allow the author of the comment to delete it
+        return Comment.objects.filter(created_by=self.request.user)
+
+class CommentUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Only allow the author of the comment to update it
+        return Comment.objects.filter(created_by=self.request.user)

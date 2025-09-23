@@ -61,12 +61,14 @@ const AllRecipes = () => {
     };
 
     const getMyFavoriteRecipes = async () => {
-        try {
-            const res = await api.get('/api/favorites/')
-            // const favoriteIds = res.data.map(fav => fav.recipe);
-            setMyFavoriteRecipes(res.data);
-        } catch (error) {
-            console.error("Error fetching favorite recipes:", error);
+        if (isLoggedIn) {
+            try {
+                const res = await api.get('/api/favorites/')
+                // const favoriteIds = res.data.map(fav => fav.recipe);
+                setMyFavoriteRecipes(res.data);
+            } catch (error) {
+                console.error("Error fetching favorite recipes:", error);
+            }
         }
     };
 
