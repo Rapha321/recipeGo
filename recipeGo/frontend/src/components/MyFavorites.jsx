@@ -30,6 +30,7 @@ import RecipeDialog from './RecipeDialog.jsx'
 import LoginRegister from './LoginRegister.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
 import { useAuth } from '../AuthContext.jsx';
+import RecipeSecondaryActions from './RecipeSecondaryActions.jsx';
 
 
 const MyFavorites = () => {
@@ -151,6 +152,12 @@ const MyFavorites = () => {
         setOpenRecipeDialog(true);
     };
 
+    const handleEditClick = (recipeId) => {
+        // Close the dialog before navigating
+        setOpenRecipeDialog(false);
+        navigate(`/recipes/update/${recipeId}`);
+    };
+
     return (
         <>
             {/* Success/Error Message */}
@@ -188,46 +195,15 @@ const MyFavorites = () => {
                                 <ListItem
                                     key={favRecipe.id}
                                     onClick={() => handleRecipeClick(favRecipe.id)}
-                                    secondaryAction = {
-                                        <Stack direction="row" spacing={1}>
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="heart" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleFavoriteClick(favRecipe.id);
-                                                }}
-                                            >
-                                                {
-                                                    myFavoriteRecipes.some(favorite => favorite.id === favRecipe.id) ? (
-                                                        <FavoriteIcon sx={{ color: 'red' }} />
-                                                    ) : (
-                                                        <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                                )}
-                                            </IconButton>
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="tag" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleTagClick(favRecipe.id);
-                                                }}
-                                                sx={{ color: 'blue' }}
-                                            >
-                                                <LocalOfferIcon />
-                                            </IconButton>
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="delete" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDeleteClick(favRecipe.id);
-                                                }}
-                                                sx={{ color: 'gray' }}
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                        </Stack>
+                                    secondaryAction={
+                                        <RecipeSecondaryActions 
+                                            recipe={favRecipe}
+                                            myFavoriteRecipes={myFavoriteRecipes}
+                                            handleFavoriteClick={() => handleFavoriteClick(favRecipe.id)}
+                                            handleTagClick={() => handleTagClick(favRecipe.id)}
+                                            handleEditClick={() => handleEditClick(favRecipe.id)}
+                                            handleDeleteClick={() => handleDeleteClick(favRecipe.id)}
+                                        />
                                     }
                                     sx={{
                                             border: "1px solid #ccc",

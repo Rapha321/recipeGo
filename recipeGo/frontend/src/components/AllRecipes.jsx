@@ -32,6 +32,7 @@ import Tag from './Tag.jsx';
 import RecipeDialog from './RecipeDialog.jsx'
 import DeleteConfirmationDialog from './DeleteConfirmation.jsx'
 import { useAuth } from '../AuthContext.jsx';
+import RecipeSecondaryActions from './RecipeSecondaryActions.jsx';
 
 
 const AllRecipes = () => {
@@ -150,6 +151,12 @@ const AllRecipes = () => {
         setOpenRecipeDialog(true);
     };
 
+    const handleEditClick = (recipeId) => {
+        // Close the dialog before navigating
+        setOpenRecipeDialog(false);
+        navigate(`/recipes/update/${recipeId}`);
+    };
+
     return (
         <>
             <Snackbar
@@ -189,56 +196,69 @@ const AllRecipes = () => {
                                 <ListItem
                                     key={recipe.id}
                                     onClick={() => handleRecipeClick(recipe.id)}
+
                                     secondaryAction={
-                                        <Stack direction="row" spacing={1}>
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="heart"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleFavoriteClick(recipe.id);
-                                                }}
-                                                hide={recipe.created_by !== user?.user_id}
-                                                disabled={recipe.created_by !== user?.user_id}
-                                            >
-                                                {
-                                                    recipe.created_by !== user?.user_id ? (
-                                                        <FavoriteBorderIcon sx={{ color: 'light-grey' }} />
-                                                    ) : (
-                                                        myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
-                                                            <FavoriteIcon sx={{ color: 'red' }} />
-                                                        ) : (
-                                                            <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                                        )
-                                                    )
-                                                }
-                                            </IconButton>
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="tag"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleTagClick(recipe.id);
-                                                }}
-                                                disabled={recipe.created_by !== user?.user_id}
-                                                sx={{ color: 'blue' }}
-                                            >
-                                                <LocalOfferIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="delete"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDeleteClick(recipe.id);
-                                                }}
-                                                disabled={recipe.created_by !== user?.user_id}
-                                                sx={{ color: 'gray' }}
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                        </Stack>
+                                        <RecipeSecondaryActions 
+                                            recipe={recipe}
+                                            myFavoriteRecipes={myFavoriteRecipes}
+                                            handleFavoriteClick={() => handleFavoriteClick(recipe.id)}
+                                            handleTagClick={() => handleTagClick(recipe.id)}
+                                            handleEditClick={() => handleEditClick(recipe.id)}
+                                            handleDeleteClick={() => handleDeleteClick(recipe.id)}
+
+                                        />
                                     }
+
+                                    // secondaryAction={
+                                    //     <Stack direction="row" spacing={1}>
+                                    //         <IconButton
+                                    //             edge="end"
+                                    //             aria-label="heart"
+                                    //             onClick={(e) => {
+                                    //                 e.stopPropagation();
+                                    //                 handleFavoriteClick(recipe.id);
+                                    //             }}
+                                    //             hide={recipe.created_by !== user?.user_id}
+                                    //             disabled={recipe.created_by !== user?.user_id}
+                                    //         >
+                                    //             {
+                                    //                 recipe.created_by !== user?.user_id ? (
+                                    //                     <FavoriteBorderIcon sx={{ color: 'light-grey' }} />
+                                    //                 ) : (
+                                    //                     myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
+                                    //                         <FavoriteIcon sx={{ color: 'red' }} />
+                                    //                     ) : (
+                                    //                         <FavoriteBorderIcon sx={{ color: 'red' }} />
+                                    //                     )
+                                    //                 )
+                                    //             }
+                                    //         </IconButton>
+                                    //         <IconButton
+                                    //             edge="end"
+                                    //             aria-label="tag"
+                                    //             onClick={(e) => {
+                                    //                 e.stopPropagation();
+                                    //                 handleTagClick(recipe.id);
+                                    //             }}
+                                    //             disabled={recipe.created_by !== user?.user_id}
+                                    //             sx={{ color: 'blue' }}
+                                    //         >
+                                    //             <LocalOfferIcon />
+                                    //         </IconButton>
+                                    //         <IconButton
+                                    //             edge="end"
+                                    //             aria-label="delete"
+                                    //             onClick={(e) => {
+                                    //                 e.stopPropagation();
+                                    //                 handleDeleteClick(recipe.id);
+                                    //             }}
+                                    //             disabled={recipe.created_by !== user?.user_id}
+                                    //             sx={{ color: 'gray' }}
+                                    //         >
+                                    //             <Delete />
+                                    //         </IconButton>
+                                    //     </Stack>
+                                    // }
                                     sx={{
                                         border: "1px solid #ccc",
                                         borderRadius: 2,
