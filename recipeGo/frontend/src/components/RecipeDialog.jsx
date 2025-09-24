@@ -43,7 +43,15 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                         <Typography variant="body1" sx={{ mb: 2 }}>
                             {recipeDetails.description}
                         </Typography>
-                        {isOwner && (
+                        <Typography variant="subtitle1">Ingredients:</Typography>
+                        <Typography variant="body1" sx={{ mb: 4 }}>
+                            {recipeDetails.ingredients}
+                        </Typography>
+                        <Typography variant="subtitle1">Instructions:</Typography>
+                        <Typography variant="body1" sx={{ mb: 4 }}>
+                            {recipeDetails.instructions}
+                        </Typography>
+                        {isOwner && recipeDetails.tags && recipeDetails.tags.length > 0 && (
                             <>
                                 <Typography variant="subtitle1">Tags:</Typography>
                                 <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 1 }}>

@@ -23,15 +23,19 @@ const Comment = ({ recipeId }) => {
     const [newComment, setNewComment] = useState('');
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingContent, setEditingContent] = useState('');
+    const [profiles, setProfiles] = useState([]); 
 
     useEffect(() => {
-        fetchComments();
+        fetchData();
     }, [recipeId]);
 
-    const fetchComments = async () => {
+    const fetchData = async () => {
         try {
-            const res = await api.get(`/api/recipes/${recipeId}/comments/`);
-            setComments(res.data);
+            const commentsRes = await api.get(`/api/recipes/${recipeId}/comments/`);
+            const profilesRes = await api.get('/api/profiles/');
+
+            setComments(commentsRes.data);
+            setProfiles(profilesRes.data);
         } catch (error) {
             console.error("Error fetching comments:", error);
         }
@@ -42,7 +46,7 @@ const Comment = ({ recipeId }) => {
         try {
             await api.post(`/api/recipes/${recipeId}/comments/create/`, { content: newComment });
             setNewComment('');
-            fetchComments();
+            fetchData();
         } catch (error) {
             console.error("Error creating comment:", error);
         }
@@ -51,7 +55,7 @@ const Comment = ({ recipeId }) => {
     const handleCommentDelete = async (commentId) => {
         try {
             await api.delete(`/api/comments/delete/${commentId}/`);
-            fetchComments();
+            fetchData();
         } catch (error) {
             console.error("Error deleting comment:", error);
         }
@@ -67,7 +71,7 @@ const Comment = ({ recipeId }) => {
             await api.patch(`/api/comments/update/${editingCommentId}/`, { content: editingContent });
             setEditingCommentId(null);
             setEditingContent('');
-            fetchComments();
+            fetchData();
         } catch (error) {
             console.error("Error updating comment:", error);
         }
@@ -93,10 +97,15 @@ const Comment = ({ recipeId }) => {
                 </Button>
             </Box>
             <List>
-                {comments.map((comment) => (
+                {comments.map((comment) => {
+                    const authorProfile = profiles.find(p => p.user === comment.created_by.id);
+                    const profileImage = authorProfile ? authorProfile.image : null;
+                    return (
                     <ListItem key={comment.id} alignItems="flex-start" sx={{ borderBottom: '1px solid #e0e0e0', py: 2 }}>
                         <ListItemAvatar>
-                            <Avatar>{comment.created_by.username.charAt(0).toUpperCase()}</Avatar>
+                            <Avatar alt={comment.created_by.username} src={profileImage}>
+                                {comment.created_by.username.charAt(0).toUpperCase()}
+                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText
                             primary={comment.created_by.username}
@@ -145,7 +154,7 @@ const Comment = ({ recipeId }) => {
                             </Box>
                         )}
                     </ListItem>
-                ))}
+                )})}
             </List>
         </Paper>
     );

@@ -22,8 +22,7 @@ const ProfileSetup = () => {
         first_name: '',
         last_name: '',
         bio: '',
-        image_url: '',
-        image: null,
+        image_url: ''
     });
     const [message, setMessage] = useState('');
 
@@ -46,8 +45,7 @@ const ProfileSetup = () => {
                 first_name: data.first_name || '',
                 last_name: data.last_name || '',
                 bio: data.bio || '',
-                image_url: data.image || '',
-                image: null,
+                image_url: data.image || ''
             });
         } catch (error) {
             console.error("Error fetching user profile:", error);
@@ -127,7 +125,7 @@ const ProfileSetup = () => {
                                 onChange={handleInputChange}
                             />
                             <Box sx={{ mt: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                                {profileData.image_url && !profileData.image && (
+                                {profileData.image_url && (
                                     <Avatar src={profileData.image_url} sx={{ width: 56, height: 56 }} />
                                 )}
                                 <Box>

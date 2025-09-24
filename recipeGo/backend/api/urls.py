@@ -29,6 +29,7 @@ urlpatterns = [
     # Profile and User info
     path('user/info/', views.UserInfoView.as_view(), name='user-info'),
     path('profile/', views.UserProfileView.as_view(), name='user-profile'),
+    path('profiles/', views.AllProfilesView.as_view(), name='user-profiles'),
     path('profile/update/', views.ProfileUpdateView.as_view(), name='profile-update'),
 
 

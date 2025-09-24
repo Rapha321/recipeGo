@@ -22,7 +22,7 @@ class UserAndProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'bio', 'image']
+        fields = ['user', 'first_name', 'last_name', 'bio', 'image']
 
     def update(self, instance, validated_data):
         # Extract user data directly from validated_data using the source field
@@ -37,11 +37,6 @@ class UserAndProfileSerializer(serializers.ModelSerializer):
         user = instance.user
         user.first_name = user_data.get('first_name', user.first_name)
         user.last_name = user_data.get('last_name', user.last_name)
-
-        # if first_name is not None:
-        #     user.first_name = first_name
-        # if last_name is not None:
-        #     user.last_name = last_name
         user.save()
 
         return instance

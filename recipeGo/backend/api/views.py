@@ -200,6 +200,13 @@ class UserProfileView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user.profile
+    
+class AllProfilesView(generics.ListAPIView):
+    serializer_class = UserAndProfileSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return Profile.objects.all()
 
 class ProfileUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserAndProfileSerializer

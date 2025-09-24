@@ -50,13 +50,17 @@ export const AuthProvider = ({ children }) => {
     const handleLogout = async () => {
         try {
             const token = localStorage.getItem(ACCESS_TOKEN);
+            const refreshToken = localStorage.getItem(REFRESH_TOKEN);
             if (token) {
-                await fetch('api/token/blacklist/', {
+                await fetch('/api/token/blacklist/', {
                     method: 'POST',
                     headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json',
                         },
+                    body: JSON.stringify({
+                        refresh: refreshToken
+                    }),
                 });
             }
         } catch (error) {
