@@ -1,6 +1,6 @@
 ## recipeGO
 
-This is the final project for Harvard CS50's Web Programming with Python and Javascript. recipeGo is a full-stack web application designed to allow users to create, share, and manage recipes. It features user authentication, a recipe creation form, and a dedicated profile page.
+This is the final project for Harvard [CS50's Web Programming with Python and Javascript](https://cs50.harvard.edu/web/). **recipeGo** is a full-stack web application designed to allow users to create, share, and manage recipes. It features user authentication, a recipe creation form, and a dedicated profile page.
 
 
 -------------------------------
