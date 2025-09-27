@@ -11,7 +11,8 @@ import {
         Button, 
         Link,
         Typography, 
-        Stack } from "@mui/material";
+        Stack,
+        Alert } from "@mui/material";
 import { useAuth } from "../AuthContext";
 
 
@@ -19,6 +20,7 @@ function Form({ route, method }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -27,6 +29,7 @@ function Form({ route, method }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
+        setError(""); 
 
         try {
             const res = await api.post(route, { username, password })
@@ -37,7 +40,30 @@ function Form({ route, method }) {
                 navigate("/profile")
             }
         } catch (error) {
-            alert(error)
+            // Extract meaningful error message
+            let errorMessage = "An error occurred. Please try again.";
+            
+            if (error.response) {
+                // Server responded with an error status
+                if (error.response.data && error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                } else if (error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                } else if (error.response.status === 401) {
+                    errorMessage = "Invalid username or password.";
+                } else if (error.response.status === 400) {
+                    errorMessage = "Please check your input and try again.";
+                }
+
+                if (errorMessage.includes("No active account found")) {
+                    errorMessage = "No account found with these credentials. Please check your username and password, or create a new account.";
+                }
+            } else if (error.request) {
+                // Network error
+                errorMessage = "Network error. Please check your connection.";
+            }
+            
+            setError(errorMessage);
         } finally {
             setLoading(false)
         }
@@ -52,6 +78,12 @@ function Form({ route, method }) {
 
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <Stack spacing={3}>
+                        {error && (
+                            <Alert severity="error" onClose={() => setError("")}>
+                                {error}
+                            </Alert>
+                        )}
+
                         <TextField
                             label="Username"
                             variant="outlined"

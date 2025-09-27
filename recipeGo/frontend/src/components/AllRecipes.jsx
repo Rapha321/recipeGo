@@ -209,56 +209,6 @@ const AllRecipes = () => {
                                         />
                                     }
 
-                                    // secondaryAction={
-                                    //     <Stack direction="row" spacing={1}>
-                                    //         <IconButton
-                                    //             edge="end"
-                                    //             aria-label="heart"
-                                    //             onClick={(e) => {
-                                    //                 e.stopPropagation();
-                                    //                 handleFavoriteClick(recipe.id);
-                                    //             }}
-                                    //             hide={recipe.created_by !== user?.user_id}
-                                    //             disabled={recipe.created_by !== user?.user_id}
-                                    //         >
-                                    //             {
-                                    //                 recipe.created_by !== user?.user_id ? (
-                                    //                     <FavoriteBorderIcon sx={{ color: 'light-grey' }} />
-                                    //                 ) : (
-                                    //                     myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
-                                    //                         <FavoriteIcon sx={{ color: 'red' }} />
-                                    //                     ) : (
-                                    //                         <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                    //                     )
-                                    //                 )
-                                    //             }
-                                    //         </IconButton>
-                                    //         <IconButton
-                                    //             edge="end"
-                                    //             aria-label="tag"
-                                    //             onClick={(e) => {
-                                    //                 e.stopPropagation();
-                                    //                 handleTagClick(recipe.id);
-                                    //             }}
-                                    //             disabled={recipe.created_by !== user?.user_id}
-                                    //             sx={{ color: 'blue' }}
-                                    //         >
-                                    //             <LocalOfferIcon />
-                                    //         </IconButton>
-                                    //         <IconButton
-                                    //             edge="end"
-                                    //             aria-label="delete"
-                                    //             onClick={(e) => {
-                                    //                 e.stopPropagation();
-                                    //                 handleDeleteClick(recipe.id);
-                                    //             }}
-                                    //             disabled={recipe.created_by !== user?.user_id}
-                                    //             sx={{ color: 'gray' }}
-                                    //         >
-                                    //             <Delete />
-                                    //         </IconButton>
-                                    //     </Stack>
-                                    // }
                                     sx={{
                                         border: "1px solid #ccc",
                                         borderRadius: 2,
@@ -267,10 +217,11 @@ const AllRecipes = () => {
                                         p: 2,
                                         width: "94%",
                                         mx: "3%",
+                                        pr: { xs: 8, sm: 4 },
                                         transition: "border 0.2s ease-in-out",
                                         "&:hover": {
                                             border: "2px solid #1976d2",
-                                        }
+                                        },
                                     }}
                                 >
                                     <Stack direction="row" spacing={2}>
@@ -287,11 +238,22 @@ const AllRecipes = () => {
                                             />
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={<Typography variant="h6">{recipe.title}</Typography>}
-                                            secondary={<Typography variant="body2" color="text.secondary">{recipe.description}</Typography>}
+                                            primary={<Typography variant="h6" >{recipe.title}</Typography>}
+                                            secondary={<Typography variant="body2" 
+                                                                   color="text.secondary"
+                                                                   sx={{
+                                                                            overflow: 'hidden',
+                                                                            textOverflow: 'ellipsis',
+                                                                            display: '-webkit-box',
+                                                                            WebkitLineClamp: { xs: 1, sm: 2 },
+                                                                            WebkitBoxOrient: 'vertical',
+                                                                        }}
+                                                        >
+                                                            {recipe.description}
+                                                        </Typography>}
+                                            sx={{ pr: 1 }}
                                         />
                                     </Stack>
-
                                 </ListItem>
                             )
                         })}

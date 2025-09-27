@@ -27,7 +27,7 @@ const RecipeSecondaryAction = ({
     const openMenu = Boolean(anchorEl);
     const { isLoggedIn, user } = useAuth();
     const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLargeScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
     const handleMenuClick = (event) => {
         event.stopPropagation();
@@ -40,8 +40,8 @@ const RecipeSecondaryAction = ({
 
     return (
         <>
-            {/* Shows on medium and up, hidden on small screens */}
-            {!isSmallScreen ? (
+            {/* hide secondary action buttons on small and medium screen */}
+            {!isLargeScreen ? (
                 <Stack direction="row" spacing={1} sx={{ mr: 1 }}>
                     <IconButton
                         aria-label="favorite"
@@ -91,7 +91,6 @@ const RecipeSecondaryAction = ({
                 </Stack>
             ) : (
                 <>
-                    {/* Shows on small screens, hidden on medium and up */}
                     <IconButton
                         aria-label="more"
                         aria-controls={openMenu ? 'long-menu' : undefined}
