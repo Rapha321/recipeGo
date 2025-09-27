@@ -51,25 +51,21 @@ Furthermore, the mobile-responsive design ensures seamless functionality across 
 
 #### File Structure
 
-**Backend (/backend)**
+**Backend (/backend/backend)**
+ - `urls.py`: URL routing for all API endpoints
+ - `settings.py`: Django configuration including CORS, JWT, and database settings
+ - `manage.py`: Django management script for running commands
+ - `requirements.txt`: Python package dependencies
+
+**API (/backend/api)**
  - `models.py`: Contains the Recipe, User/Profile, Tag and Comment models with their relationships
  - `serializers.py`: Django REST Framework serializers for API data transformation
  - `views.py`: API views handling CRUD operations for recipes and user management
- - `urls.py`: URL routing for all API endpoints
- - `settings.py`: Django configuration including CORS, JWT, and database settings
- - `admin.py`: Django admin configuration for managing models through admin interface
- - `apps.py`: Application configuration
- - ???? `tests.py`: Test cases for backend functionality
- - `manage.py`: Django management script for running commands
- - `requirements.txt`: Python package dependencies
- - ???? `wsgi.py`: WSGI configuration for deployment
-
-**API (/api)**
- - `models.py`: API-specific models and database schema definitions
  - `serializers.py`: API serializers for data conversion between JSON and Python objects
- - `views.py`: API endpoint views and business logic
  - `urls.py`: API URL routing and endpoint definitions
  - `apps.py`: API application configuration
+ - `admin.py`: Django admin configuration for managing models through admin interface
+
 
 **Frontend (/frontend/src)**
 Components:
@@ -118,7 +114,7 @@ Core Files:
  - Install dependencies:
     `cd backend`
     `pip install -r requirements.txt`
-    
+
  - Run database migrations:
     `python manage.py makemigrations`
     `python manage.py migrate`
