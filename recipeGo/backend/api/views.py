@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, status
-from .serializers import UserSerializer, RecipeSerializer, FavoriteSerializer, TagSerializer, UserAndProfileSerializer, ProfileSerializer, CommentSerializer
+from .serializers import UserSerializer, RecipeSerializer, FavoriteSerializer, TagSerializer, UserAndProfileSerializer, UserRegistrationSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Recipe, Tag, Profile, Comment
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import ValidationError
 
 
 # Recipe
@@ -109,8 +111,22 @@ class RecipeTagDetachView(APIView):
 # User
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny] 
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        
+        # Add tokens to the response
+        user = User.objects.get(username=request.data['username'])
+        refresh = RefreshToken.for_user(user)
+        
+        response.data.update({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })
+        
+        return response
 
 
 # Favorite

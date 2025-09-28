@@ -27,7 +27,7 @@ const RecipeSecondaryAction = ({
     const openMenu = Boolean(anchorEl);
     const { isLoggedIn, user } = useAuth();
     const theme = useTheme();
-    const isLargeScreen = useMediaQuery(theme.breakpoints.down('lg'));
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const handleMenuClick = (event) => {
         event.stopPropagation();
@@ -41,7 +41,7 @@ const RecipeSecondaryAction = ({
     return (
         <>
             {/* hide secondary action buttons on small and medium screen */}
-            {!isLargeScreen ? (
+            {!isSmallScreen ? (
                 <Stack direction="row" spacing={1} sx={{ mr: 1 }}>
                     <IconButton
                         aria-label="favorite"
@@ -51,11 +51,16 @@ const RecipeSecondaryAction = ({
                         }}
                         disabled={recipe.created_by !== user?.user_id}
                     >
-                        {myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
-                            <FavoriteIcon sx={{ color: 'red' }} />
-                        ) : (
-                            <FavoriteBorderIcon sx={{ color: 'red' }} />
-                        )}
+                        {recipe.created_by !== user?.user_id ? ( <FavoriteBorderIcon sx={{ color: 'light-gray' }} /> ) :
+                            (
+                                myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? 
+                                (
+                                    <FavoriteIcon sx={{ color: 'red' }} />
+                                ) : (
+                                    <FavoriteBorderIcon sx={{ color: 'red' }} />
+                                )
+                            )
+                        }
                     </IconButton>
                     <IconButton
                         aria-label="tag"
@@ -105,30 +110,47 @@ const RecipeSecondaryAction = ({
                         open={openMenu}
                         onClose={handleMenuClose}
                     >
-                        <MenuItem onClick={(e) => { e.stopPropagation(); handleFavoriteClick(recipe.id); handleMenuClose(); }}>
-                            <IconButton aria-label="favorite" sx={{ pr: 1 }} disabled={recipe.created_by !== user?.user_id}>
-                                {myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? (
-                                    <FavoriteIcon sx={{ color: 'red' }} />
-                                ) : (
-                                    <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                )}
+                        <MenuItem 
+                            onClick={(e) => { e.stopPropagation(); handleFavoriteClick(recipe.id); handleMenuClose(); }}
+                            disabled={recipe.created_by !== user?.user_id}
+                        >
+                            <IconButton aria-label="favorite" sx={{ pr: 1 }} >
+                                {recipe.created_by !== user?.user_id ? ( <FavoriteBorderIcon sx={{ color: 'light-gray' }} /> ) :
+                                    (
+                                        myFavoriteRecipes.some(favorite => favorite.id === recipe.id) ? 
+                                        (
+                                            <FavoriteIcon sx={{ color: 'red' }} />
+                                        ) : (
+                                            <FavoriteBorderIcon sx={{ color: 'red' }} />
+                                        )
+                                    )
+                                }
                             </IconButton>
                             Favorite
                         </MenuItem>
-                        <MenuItem onClick={(e) => { e.stopPropagation(); handleTagClick(recipe.id); handleMenuClose(); }}>
-                            <IconButton aria-label="tag" sx={{ pr: 1 }} disabled={recipe.created_by !== user?.user_id}>
+                        <MenuItem 
+                            onClick={(e) => { e.stopPropagation(); handleTagClick(recipe.id); handleMenuClose(); }}
+                            disabled={recipe.created_by !== user?.user_id}
+                        >
+                            <IconButton aria-label="tag" sx={{ pr: 1 }} >
                                 <LocalOfferIcon />
                             </IconButton>
                             Tag
                         </MenuItem>
-                        <MenuItem onClick={(e) => { e.stopPropagation(); handleEditClick(recipe.id); handleMenuClose(); }}>
-                            <IconButton aria-label="edit" sx={{ pr: 1 }} disabled={recipe.created_by !== user?.user_id}>
+                        <MenuItem 
+                            onClick={(e) => { e.stopPropagation(); handleEditClick(recipe.id); handleMenuClose(); }}
+                            disabled={recipe.created_by !== user?.user_id}
+                        >
+                            <IconButton aria-label="edit" sx={{ pr: 1 }}>
                                 <EditIcon />
                             </IconButton>
                             Edit
                         </MenuItem>
-                        <MenuItem onClick={(e) => { e.stopPropagation(); handleDeleteClick(recipe.id); handleMenuClose(); }}>
-                            <IconButton aria-label="delete" sx={{ pr: 1 }} disabled={recipe.created_by !== user?.user_id}>
+                        <MenuItem 
+                            onClick={(e) => { e.stopPropagation(); handleDeleteClick(recipe.id); handleMenuClose(); }}
+                            disabled={recipe.created_by !== user?.user_id}
+                        >
+                            <IconButton aria-label="delete" sx={{ pr: 1 }} >
                                 <DeleteIcon />
                             </IconButton>
                             Delete

@@ -7,7 +7,7 @@ This is the final project for Harvard [CS50's Web Programming with Python and Ja
 #### Distinctiveness and Complexity
 recipeGO stands distinctly apart from the other projects in this course in several key ways. Unlike the Commerce project (an auction site) or the Network project (a social media platform), recipeGO is a specialized recipe management application that focuses on culinary content creation and organization rather than general e-commerce or social networking.
 
-The complexity of this project is demonstrated through multiple layers of functionality. First, the application implements a comprehensive recipe management system with full CRUD operations, allowing users to create, read, update, and delete recipes with detailed ingredient lists. The recipe model handles complex data structures including multiple ingredients with quantities, detailed cooking instructions, and user relationships.
+The complexity of this project is demonstrated through multiple layers of functionality. First, the application implements a comprehensive recipe management system with full CRUD operations, allowing users to create, read, update, and delete recipes with detailed ingredient lists. The recipe model handles complex data structures including multiple ingredients, detailed cooking instructions, and user relationships.
 
 The technical architecture showcases advanced full-stack development practices. The backend utilizes Django REST Framework to create a robust RESTful API with JWT-based authentication for secure user sessions, custom serializers for handling complex recipe data, and proper relationship management between users and their recipes. The frontend demonstrates modern React development with Context API for global authentication state management, efficient API communication patterns, and Material-UI for a professional, responsive design system.
 
@@ -82,7 +82,7 @@ Components:
  - `Profile.jsx`: User profile management interface
  - `ProtectedRoute.jsx`: Route protection component for authenticated users
  - `RecipeDialog.jsx`: Modal for detailed recipe viewing
- - `RecipeSecondaryActions.jsx`: Recipe action buttons (favorite, edit, delete)
+ - `RecipeSecondaryActions.jsx`: Recipe action buttons (favorite, tag, edit, delete)
  - `Tag.jsx`: Recipe tag component for categorization
 
 Pages:
@@ -134,4 +134,12 @@ Core Files:
     `npm run dev`
 
 
-Your React app will now be running and communicating with the Django backend.
+Your React app will now be running on `http://localhost:5173` and communicating with the Django backend on `http://localhost:8000`
+
+**Demo Account**
+If you want to skip the registration process and test the application immediately, you can use the following demo account:
+
+ - Username: `bob`
+ - Password: `bobPassword`
+
+This account comes pre-loaded with sample recipes to demonstrate the application's features.

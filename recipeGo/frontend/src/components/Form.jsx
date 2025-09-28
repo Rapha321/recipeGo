@@ -36,9 +36,17 @@ function Form({ route, method }) {
             if (method === "login") {
                 login(res.data.access, res.data.refresh);
                 navigate("/")
-            } else {
-                navigate("/profile")
+            }  else {
+                // Registration - check if tokens are returned
+                if (res.data.access && res.data.refresh) {
+                    login(res.data.access, res.data.refresh);
+                    navigate("/profile");
+                } else {
+                    // No tokens returned, redirect to login
+                    navigate("/login");
+                }
             }
+            
         } catch (error) {
             // Extract meaningful error message
             let errorMessage = "An error occurred. Please try again.";

@@ -43,14 +43,27 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                         <Typography variant="body1" sx={{ mb: 2 }}>
                             {recipeDetails.description}
                         </Typography>
+
                         <Typography variant="subtitle1">Ingredients:</Typography>
                         <Typography variant="body1" sx={{ mb: 4 }}>
                             {recipeDetails.ingredients}
                         </Typography>
+
                         <Typography variant="subtitle1">Instructions:</Typography>
                         <Typography variant="body1" sx={{ mb: 4 }}>
                             {recipeDetails.instructions}
                         </Typography>
+
+                        <Typography variant="subtitle1">Preparation time:</Typography>
+                        <Typography variant="body1" sx={{ mb: 4 }}>
+                            {(() => {
+                                if (!recipeDetails.prep_time) return "Not specified";
+                                
+                                const [hours, minutes, seconds] = recipeDetails.prep_time.split(':');
+                                return `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                            })()}
+                        </Typography>
+
                         {isOwner && recipeDetails.tags && recipeDetails.tags.length > 0 && (
                             <>
                                 <Typography variant="subtitle1">Tags:</Typography>

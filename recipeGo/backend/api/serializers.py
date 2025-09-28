@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Recipe, Profile, Tag, Comment
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "username", "password"]

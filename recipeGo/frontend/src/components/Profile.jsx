@@ -157,9 +157,14 @@ const ProfileSetup = () => {
                     </Paper>
                 </Container>
             ) : (
-                <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-                    Please log in to set up your profile.
-                </Typography>
+                <Container sx={{ my: 4, textAlign: 'center' }}>
+                    <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+                        Please log in to set up your profile.
+                    </Typography>
+                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => navigate('/login')}>
+                        Login
+                    </Button>
+                </Container>
             )}
         </>
     );

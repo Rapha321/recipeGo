@@ -108,7 +108,7 @@ const RecipeForm = () => { // Changed component name for clarity
             {isLoggedIn ? (
                 <Paper elevation={4} sx={{ p: 4, my: 4, mx: 2, borderRadius: 3 }}>
                     <Typography variant="h4" component="h2" gutterBottom align="center">
-                        {id ? "Edit Recipe" : "Create New Recipe"}
+                        {id ? "Edit Recipe" : "Create Recipe"}
                     </Typography>
                     <Container component="form" onSubmit={handleSubmit} sx={{ '& .MuiTextField-root': { mb: 2 }, width: "100%" }}>
                         <TextField
@@ -156,8 +156,11 @@ const RecipeForm = () => { // Changed component name for clarity
                             id="prep_time"
                             label="Preparation Time"
                             variant="outlined"
-                            value={formInputs.prep_time}
+                            type="text"
+                            value={formInputs.prep_time || "HH:MM:SS"}
                             onChange={handleInputChange}
+                            InputLabelProps={{ shrink: true }}
+                            inputProps={{ step: 1 }}
                         />
                         <Box sx={{ mt: 2, mb: 2 }}>
                             <Typography variant="subtitle1" gutterBottom>
@@ -179,7 +182,7 @@ const RecipeForm = () => { // Changed component name for clarity
                                 onClick={handlePublicChange}
                                 name="is-public-checkbox"
                                 value={isPublic}
-                                inputProps={{ 'aria-label': 'Make recipe public' }}
+                                slotProps={{ 'aria-label': 'Make recipe public' }}
                             />
                         </Box>
                         <Button
