@@ -54,7 +54,6 @@ const RecipeForm = () => { // Changed component name for clarity
             setIsPublic(recipeData.public);
         } catch (error) {
             console.error("Error fetching recipe:", error);
-            // Handle not found case, e.g., navigate back
         }
     };
 
@@ -156,7 +155,6 @@ const RecipeForm = () => { // Changed component name for clarity
                             id="prep_time"
                             label="Preparation Time"
                             variant="outlined"
-                            type="text"
                             value={formInputs.prep_time || "HH:MM:SS"}
                             onChange={handleInputChange}
                             InputLabelProps={{ shrink: true }}

@@ -16,7 +16,7 @@ class Recipe(models.Model):
     description = models.TextField()
     ingredients = models.TextField()
     instructions = models.TextField()
-    prep_time = models.DurationField()
+    prep_time = models.TextField()
     public = models.BooleanField(default=False)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

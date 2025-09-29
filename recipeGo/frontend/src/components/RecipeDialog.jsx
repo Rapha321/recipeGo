@@ -58,9 +58,9 @@ const RecipeDialog = ({ open, onClose, recipeDetails }) => {
                         <Typography variant="body1" sx={{ mb: 4 }}>
                             {(() => {
                                 if (!recipeDetails.prep_time) return "Not specified";
-                                
+                                console.log("Prep time:", recipeDetails.prep_time);
                                 const [hours, minutes, seconds] = recipeDetails.prep_time.split(':');
-                                return `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                                return `${hours=='HH'? '0':hours} hours, ${minutes=='MM'? '0':minutes} minutes, ${seconds=='SS'? '0':seconds} seconds`;
                             })()}
                         </Typography>
 

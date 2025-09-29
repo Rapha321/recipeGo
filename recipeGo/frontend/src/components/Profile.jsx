@@ -17,7 +17,7 @@ import { useAuth } from '../AuthContext.jsx';
 
 const ProfileSetup = () => {
     const navigate = useNavigate();
-    const { isLoggedIn } = useAuth(); // You don't need 'user' here, as you're fetching the full profile
+    const { isLoggedIn, refreshUserData } = useAuth();
     const [profileData, setProfileData] = useState({
         first_name: '',
         last_name: '',
@@ -81,6 +81,11 @@ const ProfileSetup = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+
+            if (refreshUserData) {
+                await refreshUserData();
+            }
+
             setMessage("Profile updated successfully!");
             navigate('/');
         } catch (error) {

@@ -62,7 +62,9 @@ Furthermore, the mobile-responsive design ensures seamless functionality across 
  - `serializers.py`: Django REST Framework serializers for API data transformation
  - `views.py`: API views handling CRUD operations for recipes and user management
  - `serializers.py`: API serializers for data conversion between JSON and Python objects
+ - `signals.py`: Handling of profile creation when a user register
  - `urls.py`: API URL routing and endpoint definitions
+ - `tests.py`: Test api endpoints
  - `apps.py`: API application configuration
  - `admin.py`: Django admin configuration for managing models through admin interface
 

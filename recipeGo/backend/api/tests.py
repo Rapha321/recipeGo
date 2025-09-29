@@ -28,9 +28,15 @@ class APITestCase(APITestCase):
             last_name='User'
         )
         
-        # Create profiles
-        self.profile1 = Profile.objects.create(user=self.user1, bio="Test bio")
-        self.profile2 = Profile.objects.create(user=self.user2, bio="Another bio")
+        # Get profiles (created automatically by signal)
+        self.profile1 = self.user1.profile
+        self.profile2 = self.user2.profile
+        
+        # Update profile data
+        self.profile1.bio = "Test bio"
+        self.profile1.save()
+        self.profile2.bio = "Another bio"
+        self.profile2.save()
         
         # Create test recipe
         self.recipe1 = Recipe.objects.create(
@@ -207,8 +213,6 @@ class RecipeTests(APITestCase):
         url = reverse('update-recipe', kwargs={'pk': self.recipe1.id})
         data = {'title': 'Hacked Recipe'}
         
-        # Your view raises Recipe.DoesNotExist, which results in a 500 error
-        # instead of returning 404. We need to catch this exception.
         with self.assertRaises(Exception):
             response = self.client.patch(url, data, format='json')
     
@@ -297,10 +301,8 @@ class TagTests(APITestCase):
         """Test creating duplicate tag for same user"""
         self.authenticate_user(self.user1)
         url = reverse('tag-list-create')
-        data = {'name': 'Italian'}  # Already exists
+        data = {'name': 'Italian'}
         
-        # Your model has a unique constraint that raises IntegrityError
-        # instead of returning a 400 response. We need to catch this.
         with self.assertRaises(Exception):
             response = self.client.post(url, data, format='json')
     
@@ -437,8 +439,6 @@ class PermissionTests(APITestCase):
         url = reverse('update-recipe', kwargs={'pk': self.recipe1.id})
         data = {'title': 'Hacked Recipe'}
         
-        # Your view's get_object method raises Recipe.DoesNotExist
-        # instead of returning 404, which causes a 500 error
         with self.assertRaises(Exception):
             response = self.client.patch(url, data, format='json')
     
@@ -457,3 +457,6 @@ class PermissionTests(APITestCase):
         url = reverse('delete-comment', kwargs={'pk': self.comment1.id})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# Run tests with: python manage.py test api.tests
