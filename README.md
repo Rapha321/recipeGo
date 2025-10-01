@@ -149,19 +149,19 @@ This account comes pre-loaded with sample recipes to demonstrate the application
 
 -------------------------------
 
-## Features Demo
+#### Features Demo
 
-### Unregistered user
-![Unregistered user](./backend/media/demo_gif/Unregistered_user.gif)
+**Unregistered user**
+![Unregistered user](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Unregistered_user.gif)
 
-### User Registration
-![Registration](./backend/media/demo_gif/Registration.gif)
+**User Registration**
+![Registration](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Registration.gif)
 
-### Create Recipe
-![Create Recipe](./backend/media/demo_gif/CreateRecipe.gif)
+**Create Recipe**
+![Create Recipe](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/CreateRecipe.gif)
 
-### Add Tag and Edit recipe
-![Add Tag and Edit recipe](./backend/media/demo_gif/TagEdit.gif)
+**Add Tag and Edit recipe**
+![Add Tag and Edit recipe](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/TagEdit.gif)
 
-### Responsive Design
-![Responsive](./backend/media/demo_gif/Responsive.gif)
+**Responsive Design**
+![Responsive](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Responsive.gif)
