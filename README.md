@@ -145,3 +145,22 @@ If you want to skip the registration process and test the application immediatel
  - Password: `bobPassword`
 
 This account comes pre-loaded with sample recipes to demonstrate the application's features.
+
+-------------------------------
+
+#### Features Demo
+
+**Unregistered user**
+![Unregistered user](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Unregistered_user.gif)
+
+**User Registration**
+![Registration](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Registration.gif)
+
+**Create Recipe**
+![Create Recipe](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/CreateRecipe.gif)
+
+**Add Tag and Edit recipe**
+![Add Tag and Edit recipe](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/TagEdit.gif)
+
+**Responsive Design**
+![Responsive](https://github.com/Rapha321/recipeGo/blob/main/recipeGo/backend/media/demo_gif/Responsive.gif)
